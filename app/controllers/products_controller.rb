@@ -3,9 +3,8 @@ class ProductsController < ApplicationController
 
   # GET /products
   def index
-    @products = Product.all
-
-    render json: @products
+    products = Product.all
+    render json: products
   end
 
   # GET /products/1
@@ -15,12 +14,12 @@ class ProductsController < ApplicationController
 
   # POST /products
   def create
-    @product = Product.new(product_params)
+    product = Product.new(product_params)
 
-    if @product.save
-      render json: @product, status: :created, location: @product
+    if product.save
+      render json: product, status: :created, location: product
     else
-      render json: @product.errors, status: :unprocessable_entity
+      render json: product.errors, status: :unprocessable_entity
     end
   end
 
@@ -36,16 +35,18 @@ class ProductsController < ApplicationController
   # DELETE /products/1
   def destroy
     @product.destroy!
+    head :no_content
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_product
-      @product = Product.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def product_params
-      params.expect(product: [ :name, :category_id_id, :price, :image ])
-    end
+  def set_product
+    @product = Product.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Product not found" }, status: :not_found
+  end
+
+  def product_params
+    params.require(:product).permit(:name, :category_id, :price, :image)
+  end
 end
