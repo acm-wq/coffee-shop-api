@@ -3,9 +3,8 @@ class CategoriesController < ApplicationController
 
   # GET /categories
   def index
-    @categories = Category.all
-
-    render json: @categories
+    categories = Category.all
+    render json: categories
   end
 
   # GET /categories/1
@@ -15,12 +14,12 @@ class CategoriesController < ApplicationController
 
   # POST /categories
   def create
-    @category = Category.new(category_params)
+    category = Category.new(category_params)
 
-    if @category.save
-      render json: @category, status: :created, location: @category
+    if category.save
+      render json: category, status: :created, location: category
     else
-      render json: @category.errors, status: :unprocessable_entity
+      render json: category.errors, status: :unprocessable_entity
     end
   end
 
@@ -36,16 +35,18 @@ class CategoriesController < ApplicationController
   # DELETE /categories/1
   def destroy
     @category.destroy!
+    head :no_content
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_category
-      @category = Category.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def category_params
-      params.expect(category: [ :name, :description ])
-    end
+  def set_category
+    @category = Category.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Category not found" }, status: :not_found
+  end
+
+  def category_params
+    params.require(:category).permit(:name, :description)
+  end
 end
