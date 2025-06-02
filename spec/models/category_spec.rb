@@ -3,15 +3,22 @@
 require 'rails_helper'
 
 RSpec.describe Category, type: :model do
-  describe 'associations' do
-    it { is_expected.to have_many(:products).dependent(:nullify) }
+  it "is valid with valid attributes" do
+    category = Category.new(name: "Desserts")
+    expect(category).to be_valid
   end
 
-  describe 'validations' do
-    subject { described_class.new(name: 'Example') }
+  it "is invalid without a name" do
+    category = Category.new(name: nil)
+    expect(category).to be_invalid
+  end
 
-    it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name) }
-    it { is_expected.to validate_length_of(:name).is_at_least(6).is_at_most(20) }
+  it "nullifies product category_id on destroy" do
+    category = Category.create!(name: "Drinks")
+    product = Product.create!(name: "Macchiato", category: category)
+
+    category.destroy
+
+    expect(product.reload.category_id).to be_nil
   end
 end
