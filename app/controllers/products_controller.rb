@@ -40,13 +40,13 @@ class ProductsController < ApplicationController
 
   private
 
-  def set_product
-    @product = Product.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "Product not found" }, status: :not_found
-  end
+    def set_product
+      @product = Product.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Product not found" }, status: :not_found
+    end
 
-  def product_params
-    params.require(:product).permit(:name, :category_id, :price, :image)
-  end
+    def product_params
+      params.require(:product).permit(:name, :category_id, :price, :image)
+    end
 end
