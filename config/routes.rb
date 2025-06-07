@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resources :products
   resources :categories
 
-  post '/login', to: 'auth#login'
+  post '/signin', to: 'auth#login'
   post '/signup', to: 'users#create'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
