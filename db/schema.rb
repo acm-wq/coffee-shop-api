@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_03_163855) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_13_101842) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,6 +32,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_03_163855) do
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.integer "role_type", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_roles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_user_roles_on_role_id"
+    t.index ["user_id"], name: "index_user_roles_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -43,4 +58,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_03_163855) do
   end
 
   add_foreign_key "products", "categories"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
 end
