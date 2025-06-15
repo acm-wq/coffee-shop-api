@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :products
+  resources :products do
+    resources :product_likes, module: :products, only: [:create]
+  end
   resources :categories
 
   post '/signin', to: 'auth#login'
